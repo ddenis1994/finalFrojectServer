@@ -3,7 +3,7 @@ from flask import Flask,request
 from flask_restful import Resource,Api
 #flask mongoDB api import
 from flask_mongoengine import MongoEngine
-import DB.MongoRepresent as user
+import DB.MongoRepresent as DBuser
 
 app=Flask(__name__)
 #add restrgful for the progrem
@@ -33,7 +33,11 @@ class LogIn(Resource):
 
 class SaveFile(Resource):
 	def post(self):
-		test=user(username="test1",userUniq="1")
+
+		username = request.form.get('username')
+		password = request.form.get('password')
+		print("was in hare")
+		test=DBuser(username=username,userUniq="1")
 		test.save()
 
 		return {
@@ -48,7 +52,7 @@ api.add_resource(
 	'/api/login')
 api.add_resource(
 	SaveFile,
-	'/api/login')
+	'/api/newData')
 
 
 if __name__ == '__main__':
