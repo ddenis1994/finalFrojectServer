@@ -1,0 +1,6 @@
+#!/bin/bash
+sudo -s 
+apt-get install python3-venv -y &
+apt-get install python3-pip -y &
+pyhon3 -m venv ProjectVenv  &
+pip3 install Flask &
