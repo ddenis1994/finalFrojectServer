@@ -1,72 +1,31 @@
-from flask import Flask,request,jsonify
-# flask restful api import
-from flask_restful import Resource,Api
-# flask mongoDB api import
-from flask_pymongo import PyMongo
-from pymongo import MongoClient
-
-
-import json
-
-app=Flask(__name__)
-# add resentful for the program
-api = Api(app)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/myDatabase"
-mongo=PyMongo(app)
-
-client = MongoClient('localhost', 27017)
-db = client['local']
-collection = db['testDB']
-
-
-@app.route('/')
-def hello_world():
-	return 'Hello,werld!'
+from sqlalchemy import Column, Integer, String,Boolean
+from flask import Flask, request, jsonify,session
+from models import db
+from routesMap import routes_blueprint
+from OAuth2 import config_oauth
 
 
 
 
-class LogIn(Resource):
-	def get(self):
-		username = request.form.get('username')
-		password = request.form.get('password')
-		print(username)
-		return {'result':True}
+def setup_app(app):
+    # Create tables if they do not exist already
+    @app.before_first_request
+    def create_tables():
+        db.create_all()
 
-	def post(self):
-		d = {'website': 'www.carrefax.com', 'author': 'Daniel Hoadley', 'colour': 'purple'}
-
-		# Insert the dictionary into Mongo
-		collection.insert(d)
-		username=request.form.get('username')
-		password=request.form.get('password')
-		answer={}
-		answer['result']=True
-		return jsonify(answer)
-
-class SaveFile(Resource):
-	def post(self):
-
-		username = request.form.get('username')
-		password = request.form.get('password')
-		print(username)
-		mongo.send_file("test",username)
+    db.init_app(app)
+    config_oauth(app)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+    # register the blueprint
+    app.register_blueprint(routes_blueprint)
 
 
-		return {
-			'result':True,
-			'code':0
-		}
+def create_app(config=None):
+    app = Flask(__name__)
+    setup_app(app)
+    app.run(debug=True)
 
-
-
-api.add_resource(
-	LogIn,
-	'/api/login')
-api.add_resource(
-	SaveFile,
-	'/api/newData')
-
+    return app
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    create_app(config=None)
