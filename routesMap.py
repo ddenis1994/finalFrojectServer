@@ -41,7 +41,10 @@ def login():
 @routes_blueprint.route('/api/register', methods=['POST'])
 def register():
     json_input = request.get_json()
-
+    print(json_input['username'])
+    u=Users(json_input['username'],json_input['email'],json_input['salt'],json_input['password'])
+    db.session.add(u)
+    db.session.commit()
     return {
         'result': False,
         'code': 0
