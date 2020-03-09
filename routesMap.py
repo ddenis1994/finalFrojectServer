@@ -2,7 +2,7 @@ from flask import Blueprint,request, jsonify,session
 from models import db,Users
 from authlib.oauth2 import OAuth2Error
 from OAuth2 import authorization, require_oauth
-
+from authlib.integrations.flask_oauth2 import current_token
 routes_blueprint = Blueprint('example_blueprint', __name__)
 
 
@@ -65,3 +65,27 @@ def authorize():
     else:
         grant_user = None
     return authorization.create_authorization_response(grant_user=grant_user)
+
+
+@routes_blueprint.route('/logout')
+def logout():
+    del session['id']
+    return "sucsees"
+
+
+
+@routes_blueprint.route('/oauth/token', methods=['POST'])
+def issue_token():
+    return authorization.create_token_response()
+
+
+@routes_blueprint.route('/oauth/revoke', methods=['POST'])
+def revoke_token():
+    return authorization.create_endpoint_response('revocation')
+
+
+@routes_blueprint.route('/api/me')
+@require_oauth('profile')
+def api_me():
+    user = current_token.user
+    return jsonify(id=user.id, username=user.username)

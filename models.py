@@ -43,6 +43,9 @@ class Users(db.Model):
     def check_password(self, password):
         return password == self.password_sha512
 
+    def get_user_id(self):
+        return self.id
+
 
 class Passwords(db.Model):
     __tablename__ = 'passwords'
