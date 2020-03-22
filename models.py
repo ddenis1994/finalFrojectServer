@@ -79,7 +79,6 @@ class Passwords(db.Model):
 
 class OAuth2Client(db.Model, OAuth2ClientMixin):
     __tablename__ = 'oauth2_client'
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
         db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
