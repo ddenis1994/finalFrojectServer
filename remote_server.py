@@ -16,12 +16,12 @@ login_manager = LoginManager()
 
 
 def setup_app(app):
+    app.config.from_pyfile('config.py')
     # Create tables if they do not exist already
     @app.before_first_request
     def create_tables():
         db.create_all()
 
-    app.config.from_pyfile('config.py')
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -33,7 +33,7 @@ def setup_app(app):
 
 def create_app(config=None):
     setup_app(app)
-    app.run(debug=True)
+    app.run()
     return app
 
 
