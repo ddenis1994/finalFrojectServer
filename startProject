@@ -1,4 +1,0 @@
-#!/bin/bash
-./ProjectVenv/bin/activate
-export FLASK_APP=remote_server.py
-flask run
